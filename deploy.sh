@@ -23,39 +23,33 @@ echo "Deploying to GitHub Pages..."
 echo "Current branch: $BRANCH"
 echo "Current commit: $COMMIT"
 
-# Check if gh-pages branch exists locally
-if git show-ref --verify --quiet refs/heads/gh-pages; then
-    # Branch exists locally, delete it
-    git branch -D gh-pages
+# Setup worktree for gh-pages to avoid switching branches in main working directory
+WORKTREE_DIR=".gh-pages-worktree"
+
+# Clean up any existing worktree
+if [ -d "$WORKTREE_DIR" ]; then
+    rm -rf "$WORKTREE_DIR"
 fi
 
-# Create a new gh-pages branch from the current commit
-git checkout --orphan gh-pages
+# Create worktree for gh-pages branch
+git worktree add "$WORKTREE_DIR" -B gh-pages
 
-# Remove all files except dist
-git rm -rf .
+# Copy dist contents to worktree
+cp -r dist/* "$WORKTREE_DIR/"
+cp dist/.nojekyll "$WORKTREE_DIR/" 2>/dev/null || true
 
-# Move dist contents to root
-cp -r dist/* .
-cp dist/.nojekyll . 2>/dev/null || true
+# Remove node_modules if they somehow got copied
+rm -rf "$WORKTREE_DIR/node_modules"
 
-# Remove dist directory
-rm -rf dist
-
-# Remove node_modules if they got copied (shouldn't be deployed)
-rm -rf node_modules
-
-# Add all files
+# Commit and push from worktree
+cd "$WORKTREE_DIR"
 git add -A
-
-# Commit
-git commit -m "Deploy to GitHub Pages from commit $COMMIT"
-
-# Push to origin gh-pages
+git commit -m "Deploy to GitHub Pages from commit $COMMIT" || echo "No changes to commit"
 git push origin gh-pages --force
+cd ..
 
-# Go back to the original branch
-git checkout "$BRANCH"
+# Clean up worktree
+git worktree remove "$WORKTREE_DIR" || rm -rf "$WORKTREE_DIR"
 
 echo "Deployment complete!"
 echo "Your site should be available at: https://$(git remote get-url origin | sed 's/.*github.com[:/]//' | sed 's/\.git$//' | sed 's/^\([^/]*\)$/\1\/\1/').github.io/"
