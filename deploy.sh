@@ -26,6 +26,7 @@ WORKTREE_DIR=".gh-pages-worktree"
 # Clean up any existing worktree
 if [ -d "$WORKTREE_DIR" ]; then
     rm -rf "$WORKTREE_DIR"
+    git worktree prune
 fi
 
 # Create worktree for gh-pages branch
