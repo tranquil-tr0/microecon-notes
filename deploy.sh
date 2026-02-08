@@ -12,9 +12,6 @@ if [ ! -d "dist" ]; then
     exit 1
 fi
 
-# Create a .nojekyll file to bypass Jekyll processing on GitHub Pages
-touch dist/.nojekyll
-
 # Get the current branch and commit hash
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 COMMIT=$(git rev-parse --short HEAD)
@@ -36,7 +33,6 @@ git worktree add "$WORKTREE_DIR" -B gh-pages
 
 # Copy dist contents to worktree
 cp -r dist/* "$WORKTREE_DIR/"
-cp dist/.nojekyll "$WORKTREE_DIR/" 2>/dev/null || true
 
 # Remove node_modules if they somehow got copied
 rm -rf "$WORKTREE_DIR/node_modules"
