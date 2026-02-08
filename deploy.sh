@@ -49,4 +49,4 @@ cd ..
 git worktree remove "$WORKTREE_DIR" || rm -rf "$WORKTREE_DIR"
 
 echo "Deployment complete!"
-echo "Your site should be available at: https://$(git remote get-url origin | sed 's/.*github.com[:/]//' | sed 's/\.git$//' | sed 's/^\([^/]*\)$/\1\/\1/').github.io/"
+echo "Your site should be available at: https://$(git remote get-url origin | sed 's/.*github.com[:/]//' | sed 's/\.git$//' | sed 's|\/|.github.io/|')"
