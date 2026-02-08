@@ -42,6 +42,9 @@ cp dist/.nojekyll . 2>/dev/null || true
 # Remove dist directory
 rm -rf dist
 
+# Remove node_modules if they got copied (shouldn't be deployed)
+rm -rf node_modules
+
 # Add all files
 git add -A
 

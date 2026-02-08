@@ -4,7 +4,7 @@
   "description": "AP Microeconomics website built from Obsidian markdown",
   "main": "dist/index.html",
   "scripts": {
-    "build": "tsc && bun run dist/build.js",
+    "build": "tsc && bun run build.ts",
     "dev": "concurrently \"bun run tsc --watch\" \"bun run server.ts\"",
     "watch-ts": "tsc --watch",
     "start": "bun run server.ts",
