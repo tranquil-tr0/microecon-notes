@@ -283,8 +283,12 @@ class MicroeconWebsiteBuilder {
       if (this.mediaFiles.has(`attachments/${filename}`)) return `attachments/${filename}`;
       if (this.mediaFiles.has(`Excalidraw/${filename}`)) return `Excalidraw/${filename}`;
       // Special case: Excalidraw files often use .excalidraw.md naming
-      // If the extension is not .md, also try appending .md for Excalidraw folder
+      // If the extension is not .md, also try appending .md
       if (ext !== '.md') {
+        if (this.mediaFiles.has(`attachments/${filename}.md`)) {
+          console.log(`Resolved ${filename} to attachments/${filename}.md`);
+          return `attachments/${filename}.md`;
+        }
         if (this.mediaFiles.has(`Excalidraw/${filename}.md`)) {
           console.log(`Resolved ${filename} to Excalidraw/${filename}.md`);
           return `Excalidraw/${filename}.md`;
@@ -294,7 +298,13 @@ class MicroeconWebsiteBuilder {
       // Try Extensions: .md (for Excalidraw), .svg, .mkv, .png, .jpg
       const extensions = ['.md', '.svg', '.mkv', '.mp4', '.webm', '.png', '.jpg'];
 
-      // Check Excalidraw folder first for .md (Obsidian Excalidraw plugin stores as markdown)
+      // Check attachments folder first for .md (Excalidraw plugin stores as markdown)
+      if (this.mediaFiles.has(`attachments/${filename}.md`)) {
+        console.log(`Resolved ${filename} to attachments/${filename}.md`);
+        return `attachments/${filename}.md`;
+      }
+
+      // Check Excalidraw folder for .md
       if (this.mediaFiles.has(`Excalidraw/${filename}.md`)) {
         console.log(`Resolved ${filename} to Excalidraw/${filename}.md`);
         return `Excalidraw/${filename}.md`;
